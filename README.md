@@ -28,5 +28,11 @@ Skrypt rozwiązuje problem zbyt wczesnego naciśnięcia przycisku odpowiadające
 ## Zasada działania
 Skrypt napisany został dla przycisku "1". Całość bazuje na wiedzy z tibiopedii. Wiedząc, że opóźnienie siocha wynosi 1s można sam proces leczenia usprawnić. Pierwsze kliknięcie przycisku "1" spowoduje bezpośrednio leczenie. W tym samym czasie uruchamiany jest timer z opóźnieniem. Wartość opóźnienia wynosi losowo między 1s, a 1.1s. Jeżeli w trakcie trwania timera zdarzy nam się przedwcześnie nacisnąć sio to skrypt "przetrzymuje" naciśnięty klawisz do momentu upłynięcia czasu opóźnienia i następuje "wypuszczenie" przycisku. Taki przebieg sprawy powinien gwarantować uzyskanie leczenia.
 
+### W skrócie
+1. Pierwsze naciśnięcie przycisku "1" wysyła "1" natychmiastowo i uruchamia timer z losowym opóźnieniem między 1 a 1.1 sekundy.
+2. Drugie naciśnięcie przycisku "1" w trakcie timera zarejestruje chęć wysłania "1" po zakończeniu timera.
+3. Wysłanie "1" po upływie timera inicjuje ponowne ustawienie timera, umożliwiając powtórzenie procesu.
+4. Każde kolejne naciśnięcie przycisku "1" w trakcie trwania timera (po drugim naciśnięciu) jest ignorowane aż do resetu timera.
+
 ### Uwagi
 Całość nie została bezpośrednio przetestowana na huncie.
