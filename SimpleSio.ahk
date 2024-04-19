@@ -1,36 +1,39 @@
 #Persistent
 SetBatchLines, -1
 
-firstPress := true
-timerActive := false
-secondPressQueued := false
-
-Random, randDelay, 1000, 1100  ; Losowe opóźnienie między 1000 a 1100 ms
+FirstPress := true
+SecondPressQueued := false
+TimerActive := false
 
 1::
-    if (firstPress)  ; Jeśli to pierwsze naciśnięcie
+    Random, randDelay, 1000, 1100  ; Losowe opóźnienie między 1000 a 1100 ms
+    if (FirstPress)  ; Jeśli to pierwsze naciśnięcie
     {
 	Suspend,On ; Wylaczenie przechwytywania klawiszy
         Send, 1  ; Wyślij "1" po zakończeniu timera
 	Suspend,Off ; Wlaczenie przechwytywania klawiszy
-        firstPress := false  ; Zablokuj kolejne natychmiastowe naciśnięcia
-        SetTimer, ResetPress, -%randDelay%  ; Ustaw timer do resetowania flag
-        timerActive := true  ; Oznacz, że timer jest aktywny
+        FirstPress := false  ; Zablokuj kolejne natychmiastowe naciśnięcia
+        SetTimer, ResetFirstPress, -%randDelay%  ; Ustaw timer do resetowania flagi FirstPress
+        TimerActive := true  ; Oznacz, że timer jest aktywny
     }
-    else if (timerActive && !secondPressQueued)  ; Jeśli timer jest aktywny, ale drugie naciśnięcie nie zostało jeszcze zainicjowane
+    else if (!SecondPressQueued && TimerActive)  ; Jeśli drugie naciśnięcie i timer jest aktywny
     {
-        secondPressQueued := true  ; Zaznacz, że drugie naciśnięcie zostało zainicjowane
+        SecondPressQueued := true  ; Zaznacz, że drugie naciśnięcie zostało zarejestrowane
     }
 return
 
-ResetPress:
-    if (secondPressQueued)  ; Jeśli drugie naciśnięcie zostało zainicjowane
+ResetFirstPress:
+    if (SecondPressQueued)  ; Jeśli drugie naciśnięcie zostało zarejestrowane
     {
 	Suspend,On ; Wylaczenie przechwytywania klawiszy
         Send, 1  ; Wyślij "1" po zakończeniu timera
 	Suspend,Off ; Wlaczenie przechwytywania klawiszy
+        SecondPressQueued := false  ; Reset flagi drugiego naciśnięcia
+        SetTimer, ResetFirstPress, -%randDelay%  ; Ustaw timer ponownie
     }
-    firstPress := true  ; Zresetuj flagę pierwszego naciśnięcia
-    timerActive := false  ; Zresetuj status timera
-    secondPressQueued := false  ; Zresetuj flagę drugiego naciśnięcia
+    else  ; Jeśli nie ma drugiego naciśnięcia
+    {
+        FirstPress := true  ; Zresetuj status pierwszego naciśnięcia
+        TimerActive := false  ; Zresetuj status timera
+    }
 return
